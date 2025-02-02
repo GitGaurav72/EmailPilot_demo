@@ -9,8 +9,10 @@ import { ComposeEmailComponent } from './compose-email/compose-email.component';
 import { EmailGroupComponent } from './email-group/email-group.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 
+
 export const routes: Routes = [
 
+    
     { path: '', component: HomeComponent },
     { path: 'login', component: LoginComponent }, // Login page
     { path: 'register', component: SigninComponent }, // Register page
@@ -21,8 +23,10 @@ export const routes: Routes = [
     
 ];
 @NgModule({
-    imports: [CommonModule, RouterModule.forRoot(routes)], // Use RouterModule.forRoot for the root module
+    imports: [CommonModule, RouterModule.forRoot(routes, { useHash: true })], // Use RouterModule.forRoot for the root module
     exports: [RouterModule] // Export RouterModule to make the router directives available
 })
-export class AppRoutingModule { }
+export class AppRoutingModule { 
+
+}
 
