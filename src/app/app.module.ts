@@ -57,6 +57,7 @@ import { ComposeEmailComponent } from './compose-email/compose-email.component';
 import { EmailGroupComponent } from './email-group/email-group.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AppComponent } from './app.component'; // ✅ Ensure AppComponent is included
+import { QuillModule } from 'ngx-quill';
 
 @NgModule({
   declarations: [
@@ -67,7 +68,8 @@ import { AppComponent } from './app.component'; // ✅ Ensure AppComponent is in
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    AppRoutingModule // ✅ Ensure routing module is imported
+    AppRoutingModule, 
+    QuillModule.forRoot()
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy } // ✅ Enable hash-based routing globally
