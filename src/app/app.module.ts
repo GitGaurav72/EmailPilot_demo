@@ -1,79 +1,67 @@
-// import { NgModule } from '@angular/core';
-// import { BrowserModule } from '@angular/platform-browser';
-// import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-// import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-// import { HashLocationStrategy, LocationStrategy } from '@angular/common';
-// import { RouterModule, Routes } from '@angular/router';
-// import { HomeComponent } from './home/home.component';
-// import { LoginComponent } from './loginModule/login/login.component';
-// import { SigninComponent } from './loginModule/signin/signin.component';
-// import { ComposeEmailComponent } from './compose-email/compose-email.component';
-// import { EmailGroupComponent } from './email-group/email-group.component';
-// import { DashboardComponent } from './dashboard/dashboard.component';
-
-// @NgModule({
-//   declarations: [
-  
-//   ],
-//   imports: [
-//     RouterModule.forRoot([
-        
-//           { path: '', component: HomeComponent },
-//           { path: 'login', component: LoginComponent }, // Login page
-//           { path: 'register', component: SigninComponent }, // Register page
-//           { path: 'composeEmail', component: ComposeEmailComponent},
-//           { path: 'emailGroup', component: EmailGroupComponent},
-//           { path: 'mailShedularDashboard', component: DashboardComponent},
-//           { path: '**', redirectTo: '' } 
-//     ], { useHash: true }), // Enable hash-based routing
-//     NgModule,
-//     BrowserModule,
-//     FormsModule,
-//     ReactiveFormsModule,
-//     BrowserAnimationsModule,
- 
-
-//   ],
-//   providers: [
-//     { provide: LocationStrategy, useClass: HashLocationStrategy }
-//   ],
-//   bootstrap: []
-// })
-// export class AppModule { }
-
-
-
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'; // ✅ Import HttpClientModule
 
 import { AppRoutingModule } from './app.routes'; // ✅ Import AppRoutingModule
-import { HomeComponent } from './home/home.component';
-import { LoginComponent } from './loginModule/login/login.component';
-import { SigninComponent } from './loginModule/signin/signin.component';
-import { ComposeEmailComponent } from './compose-email/compose-email.component';
-import { EmailGroupComponent } from './email-group/email-group.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { AppComponent } from './app.component'; // ✅ Ensure AppComponent is included
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { QuillModule } from 'ngx-quill';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator'
+import { OAuthModule, OAuthStorage } from 'angular-oauth2-oidc';
+import { AppComponent } from './app.component'; // ✅ Ensure AppComponent is imported
+import { AuthInterceptor } from './interceptor/auth.interceptor'; // ✅ Ensure AuthInterceptor is imported
+import { faFacebook, faTwitter, faLinkedin, faInstagram } from '@fortawesome/free-brands-svg-icons';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { NotificationService } from './services/notification.service';
 
 @NgModule({
   declarations: [
-
+    // ✅ Add AppComponent here
   ],
   imports: [
+    
     BrowserModule,
     FormsModule,
-    ReactiveFormsModule,
+    ReactiveFormsModule, // ✅ Remove duplicate
     BrowserAnimationsModule,
+    HttpClientModule, // ✅ Required for HttpClient to work
     AppRoutingModule, 
-    QuillModule.forRoot()
+    MatInputModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatSnackBarModule,
+    QuillModule.forRoot(),
+    MatTableModule,
+    MatPaginatorModule,
+    MatSnackBarModule,
+    MatButtonModule,
+    FontAwesomeModule,
+    OAuthModule.forRoot({
+      resourceServer: {
+        allowedUrls: ['http://your-backend-api'],
+        sendAccessToken: true,
+      },
+    }),
   ],
   providers: [
-    { provide: LocationStrategy, useClass: HashLocationStrategy } // ✅ Enable hash-based routing globally
+
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },      // ✅ Enable hash-based routing globally
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
+    { provide: OAuthStorage, useValue: localStorage },
+    NotificationService // ✅ Add AuthInterceptor
   ],
-  bootstrap: [] // ✅ Bootstrap with AppComponent
+  bootstrap: [] // ✅ Ensure AppComponent is bootstrapped
 })
-export class AppModule { }
+export class AppModule {
+
+  constructor() {
+    library.add(faFacebook, faTwitter, faLinkedin, faInstagram);
+  }
+ }
